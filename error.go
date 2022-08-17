@@ -16,7 +16,6 @@ import (
 )
 
 // Error message from Tenable
-// See https://docs.atlassian.com/Tenable/REST/cloud/#error-responses
 type Error struct {
 	HTTPError     error
 	ErrorMessages []string          `json:"errorMessages"`
