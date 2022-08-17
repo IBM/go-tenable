@@ -23,7 +23,7 @@ type CurrentUser struct {
 	User
 }
 
-// CurrentUser represents a Jira user.
+// CurrentUser represents a Tenable user.
 type CurrentUserResponse struct {
 	// "type": "regular",
 	Type string
@@ -39,9 +39,9 @@ type CurrentUserResponse struct {
 	Timestamp int
 }
 
-// GetWithContext gets user info from Jira using its Account Id
+// GetWithContext gets user info from Tenable using its Account Id
 //
-// Jira API docs: https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-user-get
+// Tenable API docs: https://docs.tenable.com/tenablesc/api/CurrentUser.md
 func (s *CurrentUserService) GetWithContext(ctx context.Context) (*CurrentUser, *Response, error) {
 	apiEndpoint := fmt.Sprintf("/rest/currentUser")
 	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)

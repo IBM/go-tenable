@@ -26,7 +26,7 @@ type Repository struct {
 	UUID        string      `json:"uuid,omitempty"`
 }
 
-// Repository represents a Jira user.
+// Repository represents a Tenable user.
 type RepositoryResponse struct {
 	// "type": "regular",
 	Type string
@@ -42,9 +42,9 @@ type RepositoryResponse struct {
 	Timestamp int
 }
 
-// GetWithContext gets user info from Jira using its Account Id
+// GetWithContext gets user info from Tenable using its Account Id
 //
-// Jira API docs: https://docs.tenable.com/tenablesc/api/Repository.htm
+// Tenable API docs: https://docs.tenable.com/tenablesc/api/Repository.htm
 func (s *RepositoryService) GetWithContext(ctx context.Context, requestType, fields string) ([]Repository, *Response, error) {
 	if requestType == "" {
 		requestType = "All"

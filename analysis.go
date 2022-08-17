@@ -66,7 +66,7 @@ type AnalysisResultSet struct {
 	Results                  []Analysis `json:"results,omitempty"`
 }
 
-// Analysis represents a Jira user.
+// Analysis represents a Tenable user.
 type AnalysisResponse struct {
 	Type      string              `json:",type,omitempty"`
 	Response  []AnalysisResultSet `json:"response"`
@@ -76,9 +76,9 @@ type AnalysisResponse struct {
 	Timestamp int                 `json:"timestamp,omitempty"`
 }
 
-// GetWithContext gets user info from Jira using its Account Id
+// GetWithContext gets user info from Tenable using its Account Id
 //
-// Jira API docs: https://docs.tenable.com/tenablesc/api/Analysis.htm
+// Tenable API docs: https://docs.tenable.com/tenablesc/api/Analysis.htm
 func (s *AnalysisService) GetWithContext(ctx context.Context, requestType, fields string) (*AnalysisResponse, *Response, error) {
 	if requestType == "" {
 		requestType = "All"
