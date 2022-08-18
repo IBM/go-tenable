@@ -16,17 +16,22 @@ import (
 )
 
 func main() {
-	sco_url := os.Getenv("SC05_URL")
-	if sco_url == "" {
-		fmt.Println("environment variable SCO5_URL required")
-		return
+	apiURL := os.Getenv("SC05_URL")
+	apiKey := os.Getenv("SC05_ACCESS_KEY")
+	apiSecret := os.Getenv("SC05_SECRET_KEY")
+	if apiURL == "" || apiKey == "" || apiSecret == "" {
+		fmt.Printf("Missing env vars. Requred env vars SC05_URL,SC05_ACCESS_KEY and SC05_SECRET_KEY\n")
 	}
+
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-	httpClient := http.Client{Transport: transport}
+	t := tenable.APIKeyAuthTransport{Transport: transport,
+		APIKey:    apiKey,
+		APISecret: apiSecret,
+	}
 
-	c, err := tenable.NewClient(&httpClient, sco_url)
+	c, err := tenable.NewClient(t.Client(), apiURL)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -36,7 +41,7 @@ func main() {
 	}
 	_ = resp
 	for _, v := range user {
-		fmt.Println(v.Name, v.ID)
+		fmt.Println(v.ID, v.Name)
 	}
 
 }

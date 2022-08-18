@@ -14,7 +14,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"os"
 	"reflect"
 	"strconv"
 	"strings"
@@ -36,18 +35,14 @@ type Client struct {
 	// Base URL for API requests.
 	baseURL *url.URL
 
-	apiKey string
-
-	apiSecret string
-
 	// Session storage if the user authenticates with a Session cookie
 	//	session *Session
 
 	// Services used for talking to different parts of the Tenable API.
-	//	Authentication   *AuthenticationService
-	CurrentUser *CurrentUserService
-
-	Repository *RepositoryService
+	Analysis       *AnalysisService
+	Authentication *AuthenticationService
+	CurrentUser    *CurrentUserService
+	Repository     *RepositoryService
 }
 
 // NewClient returns a new Tenable API client.
@@ -71,19 +66,13 @@ func NewClient(httpClient httpClient, baseURL string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	apiKey := os.Getenv("SC05_ACCESS_KEY")
-	apiSecret := os.Getenv("SC05_SECRET_KEY")
-	if apiKey == "" || apiSecret == "" {
-		return nil, fmt.Errorf("Requres env vars SC05_ACCESS_KEY and SC05_SECRET_KEY\n")
-	}
 
 	c := &Client{
-		client:    httpClient,
-		baseURL:   parsedBaseURL,
-		apiKey:    apiKey,
-		apiSecret: apiSecret,
+		client:  httpClient,
+		baseURL: parsedBaseURL,
 	}
-	//	c.Authentication = &AuthenticationService{client: c}
+	c.Analysis = &AnalysisService{client: c}
+	c.Authentication = &AuthenticationService{client: c}
 	c.CurrentUser = &CurrentUserService{client: c}
 	c.Repository = &RepositoryService{client: c}
 	return c, nil
@@ -106,8 +95,13 @@ func (c *Client) NewRawRequestWithContext(ctx context.Context, method, urlStr st
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("x-apikey", fmt.Sprintf("accesskey=%s; secretkey=%s;", c.apiKey, c.apiSecret))
 	req.Header.Set("Content-Type", "application/json")
+	if c.Authentication.authType == authTypeAPIKey {
+		// Set basic auth information
+		if c.Authentication.client.Authentication.apiKey != "" {
+			req.Header.Set("X-Apikey", fmt.Sprintf("accesskey=%s; secretkey=%s;", c.Authentication.apiKey, c.Authentication.apiSecret))
+		}
+	}
 
 	return req, nil
 }
@@ -148,7 +142,12 @@ func (c *Client) NewRequestWithContext(ctx context.Context, method, urlStr strin
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Apikey", fmt.Sprintf("accesskey=%s; secretkey=%s;", c.apiKey, c.apiSecret))
+	if c.Authentication.authType == authTypeAPIKey {
+		// Set basic auth information
+		if c.Authentication.apiKey != "" {
+			req.Header.Set("X-Apikey", fmt.Sprintf("accesskey=%s; secretkey=%s;", c.Authentication.apiKey, c.Authentication.apiSecret))
+		}
+	}
 
 	return req, nil
 }
@@ -239,6 +238,42 @@ func newResponse(r *http.Response, v interface{}) *Response {
 	return resp
 }
 
+// APIKeyAuthTransport is an http.RoundTripper that authenticates all requests
+// using HTTP APIKey Authentication with the provided username and password.
+type APIKeyAuthTransport struct {
+	APIKey    string
+	APISecret string
+
+	// Transport is the underlying HTTP transport to use when making requests.
+	// It will default to http.DefaultTransport if nil.
+	Transport http.RoundTripper
+}
+
+// RoundTrip implements the RoundTripper interface.  We just add the
+// APIKey auth and return the RoundTripper for this transport type.
+func (t *APIKeyAuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	req2 := cloneRequest(req) // per RoundTripper contract
+
+	req2.Header.Set("X-Apikey", fmt.Sprintf("accesskey=%s; secretkey=%s;", t.APIKey, t.APISecret))
+	return t.transport().RoundTrip(req2)
+}
+
+// Client returns an *http.Client that makes requests that are authenticated
+// using HTTP APIKey Authentication.  This is a nice little bit of sugar
+// so we can just get the client instead of creating the client in the calling code.
+// If it's necessary to send more information on client init, the calling code can
+// always skip this and set the transport itself.
+func (t *APIKeyAuthTransport) Client() *http.Client {
+	return &http.Client{Transport: t}
+}
+
+func (t *APIKeyAuthTransport) transport() http.RoundTripper {
+	if t.Transport != nil {
+		return t.Transport
+	}
+	return http.DefaultTransport
+}
+
 func interface2Int(v interface{}) (int, error) {
 	switch v := v.(type) {
 	case float64:
@@ -252,4 +287,18 @@ func interface2Int(v interface{}) (int, error) {
 	default:
 		return 0, fmt.Errorf("conversion to int from %T not supported", v)
 	}
+}
+
+// cloneRequest returns a clone of the provided *http.Request.
+// The clone is a shallow copy of the struct and its Header map.
+func cloneRequest(r *http.Request) *http.Request {
+	// shallow copy of the struct
+	r2 := new(http.Request)
+	*r2 = *r
+	// deep copy of the Header
+	r2.Header = make(http.Header, len(r.Header))
+	for k, s := range r.Header {
+		r2.Header[k] = append([]string(nil), s...)
+	}
+	return r2
 }
