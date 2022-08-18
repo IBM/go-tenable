@@ -1,0 +1,89 @@
+{
+	"type" : "regular",
+	"response" : {
+		"id" : "1",
+		"status" : "0",
+		"username" : "admin",
+		"ldapUsername" : "",
+		"firstname" : "Admin",
+		"lastname" : "User",
+		"title" : "Application Administrator",
+		"email" : "",
+		"address" : "",
+		"city" : "",
+		"state" : "",
+		"country" : "",
+		"phone" : "",
+		"fax" : "",
+		"createdTime" : "1432921843",
+		"modifiedTime" : "1453473716",
+		"lastLogin" : "1454350174",
+		"lastLoginIP" : "172.168.0.0",
+		"mustChangePassword" : "false",
+		"locked" : "false",
+		"failedLogins" : "0",
+		"authType" : "tns",
+		"fingerprint" : null,
+		"password" : "SET",
+		"managedUsersGroups" : [],
+		"managedObjectsGroups" : [],
+		"preferences" : [
+			{
+				"name" : "timezone",
+				"value" : "America/New_York",
+				"tag" : ""
+			}
+		],
+		"organization" : {
+			"id" : 0,
+			"name" : "Tenable.sc Administration",
+			"description" : ""
+		},
+		"userPrefs" : [
+			{
+				"name" : "timezone",
+				"value" : "America/New_York",
+				"tag" : ""
+			}
+		],
+		"role" : {
+			"id" : "1",
+			"name" : "Administrator",
+			"description" : "Role defining an administrator of the application"
+		},
+		"group" : {
+			"id" : -1,
+			"name" : "",
+			"description" : ""
+		},
+		"ldap" : {
+			"id" : -1,
+			"name" : "",
+			"description" : ""
+		},
+		"orgName" : "Tenable.sc Administration",
+		"switchableUsers" : [
+			{
+				"user" : {
+					"id" : "2",
+					"username" : "head",
+					"firstname" : "John",
+					"lastname" : "Doe",
+					"locked" : "false",
+					"uuid" : "96F2AD1B-1B83-462E-908A-84E6054F6B64"
+				},
+				"organization" : {
+					"id" : "1",
+					"name" : "Organization 1",
+					"description" : "",
+					"uuid" : "4F7DD1CD-EB1B-40D7-BCE1-2DB3E31F6F4C"
+				}
+			}
+		],
+		"uuid" : "4F7DD1CD-EB1B-40D7-BCE1-2DB3E31F6F4C"
+	},
+	"error_code" : 0,
+	"error_msg" : "",
+	"warnings" : [],
+	"timestamp" : 1454350604
+}

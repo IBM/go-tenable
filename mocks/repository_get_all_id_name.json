@@ -1,0 +1,34 @@
+{
+	"type" : "regular",
+	"response" : [
+		{
+			"id" : "37",
+			"name" : "ag repo1",
+			"uuid" : "A2FF7E13-2C0E-470E-A3C9-E077FE065A54"
+		},
+		{
+			"id" : "38",
+			"name" : "jm ipv4",
+			"uuid" : "2E950182-08B6-4737-830B-4ACC8F6B92F9"
+		},
+		{
+			"id" : "39",
+			"name" : "ipv6 rep",
+			"uuid" : "FF00F4D0-5B9F-4A26-998C-19430295284A"
+		},
+		{
+			"id" : "43",
+			"name" : "Test Local mobile Repository",
+			"uuid" : "8DFA4F06-646A-4A63-A56D-08CCC9098682"
+		},
+		{
+			"id" : "44",
+			"name" : "Test w\/pluginPrefs",
+			"uuid" : "E33F8169-7C8B-4D1E-B69F-4C50B6347088"
+		}
+	],
+	"error_code" : 0,
+	"error_msg" : "",
+	"warnings" : [],
+	"timestamp" : 1423767348
+}
