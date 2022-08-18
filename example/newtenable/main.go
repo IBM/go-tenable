@@ -35,6 +35,8 @@ func main() {
 		fmt.Println(err.Error())
 	}
 	_ = resp
-	fmt.Println(user)
+	for _, v := range user {
+		fmt.Println(v.Name, v.ID)
+	}
 
 }
