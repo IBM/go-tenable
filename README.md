@@ -27,7 +27,7 @@ Usage:
 package main
 
 import (
-	tenable "gopkg.in/IBM/go-tenable.v1"
+	tenable "github.com/IBM/go-tenable"
 )
 ...
 ```
