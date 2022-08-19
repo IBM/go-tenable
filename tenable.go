@@ -132,6 +132,7 @@ func (c *Client) NewRequestWithContext(ctx context.Context, method, urlStr strin
 	if body != nil {
 		buf = new(bytes.Buffer)
 		err = json.NewEncoder(buf).Encode(body)
+		//		fmt.Println(buf)
 		if err != nil {
 			return nil, err
 		}
@@ -222,6 +223,8 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 		defer httpResp.Body.Close()
 		// body, err := ioutil.ReadAll(httpResp.Body)
 		// fmt.Println(string(body))
+		// err = json.Unmarshal(body, v)
+		//fmt.Println(err.Error())
 		err = json.NewDecoder(httpResp.Body).Decode(v)
 		if err != nil {
 			return nil, err

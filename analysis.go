@@ -38,23 +38,23 @@ type Family struct {
 }
 
 type Analysis struct {
-	PluginID       string     `json:"pluginID"`
-	Severity       Severity   `json:"severity,omitempty"`
-	VPRScore       string     `json:"vprScore,omitempty"`
-	VPRContext     VPRContext `json:"vprContext,omitempty"`
-	IP             string     `json:"ip,omitempty"`
-	UUID           string     `json:"uuid,omitempty"`
-	Port           string     `json:"port,omitempty"`
-	Protocol       string     `json:"protocol,omitempty"`
-	Name           string     `json:"name,omitempty"`
-	DNSName        string     `json:"dnsName,omitempty"`
-	MACAddress     string     `json:"macAddress,omitempty"`
-	NetBiosName    string     `json:"netBiosName,omitempty"`
-	Uniqueness     string     `json:"uniqueness,omitempty"`
-	HostUniqueness string     `json:"hostUniqueness,omitempty"`
-	Family         Family     `json:"family,omitempty"`
-	Repository     Repository `json:"repository,omitempty"`
-	PluginInfo     string     `json:"pluginInfo,omitempty"`
+	PluginID       string      `json:"pluginID"`
+	Severity       Severity    `json:"severity,omitempty"`
+	VPRScore       string      `json:"vprScore,omitempty"`
+	VPRContext     interface{} `json:"vprContext,omitempty"`
+	IP             string      `json:"ip,omitempty"`
+	UUID           string      `json:"uuid,omitempty"`
+	Port           string      `json:"port,omitempty"`
+	Protocol       string      `json:"protocol,omitempty"`
+	Name           string      `json:"name,omitempty"`
+	DNSName        string      `json:"dnsName,omitempty"`
+	MACAddress     string      `json:"macAddress,omitempty"`
+	NetBiosName    string      `json:"netBiosName,omitempty"`
+	Uniqueness     string      `json:"uniqueness,omitempty"`
+	HostUniqueness string      `json:"hostUniqueness,omitempty"`
+	Family         Family      `json:"family,omitempty"`
+	Repository     Repository  `json:"repository,omitempty"`
+	PluginInfo     string      `json:"pluginInfo,omitempty"`
 }
 
 type AnalysisResultSet struct {
@@ -68,26 +68,21 @@ type AnalysisResultSet struct {
 
 // Analysis represents a Tenable user.
 type AnalysisResponse struct {
-	Type      string              `json:",type,omitempty"`
-	Response  []AnalysisResultSet `json:"response"`
-	ErrorCode int                 `json:"error_code"`
-	ErrorMsg  string              `json:"error_msg"`
-	Warnings  []string            `json:"warnings,omitempty"`
-	Timestamp int                 `json:"timestamp,omitempty"`
+	Type      string            `json:",type,omitempty"`
+	Response  AnalysisResultSet `json:"response,omitempty"`
+	ErrorCode int               `json:"error_code,omitempty"`
+	ErrorMsg  string            `json:"error_msg,omitempty"`
+	Warnings  []string          `json:"warnings,omitempty"`
+	Timestamp int               `json:"timestamp,omitempty"`
 }
 
-// GetWithContext gets user info from Tenable using its Account Id
+// PostWithContext gets user info from Tenable using its Account Id
 //
 // Tenable API docs: https://docs.tenable.com/tenablesc/api/Analysis.htm
-func (s *AnalysisService) GetWithContext(ctx context.Context, requestType, fields string) (*AnalysisResponse, *Response, error) {
-	if requestType == "" {
-		requestType = "All"
-	}
-	apiEndpoint := fmt.Sprintf("/rest/analysis?type=%s", requestType)
-	if len(fields) > 0 {
-		apiEndpoint = apiEndpoint + "&fields=" + fields
-	}
-	req, err := s.client.NewRequestWithContext(ctx, "GET", apiEndpoint, nil)
+func (s *AnalysisService) PostWithContext(ctx context.Context, body interface{}) (*AnalysisResponse, *Response, error) {
+	apiEndpoint := fmt.Sprintf("/rest/analysis")
+	fmt.Printf("url: %s\n", apiEndpoint)
+	req, err := s.client.NewRequestWithContext(ctx, "POST", apiEndpoint, body)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -100,7 +95,41 @@ func (s *AnalysisService) GetWithContext(ctx context.Context, requestType, field
 	return repoResp, resp, nil
 }
 
-// Get wraps GetWithContext using the background context.
-func (s *AnalysisService) Get(requestType, fields string) (*AnalysisResponse, *Response, error) {
-	return s.GetWithContext(context.Background(), requestType, fields)
+// Get wraps PostWithContext using the background context.
+func (s *AnalysisService) Post(body interface{}) (*AnalysisResponse, *Response, error) {
+	return s.PostWithContext(context.Background(), body)
+}
+
+type AnalysisFilter struct {
+	ID           string `json:"id"`
+	FilterName   string `json:"filterName"`
+	Operator     string `json:"operator"`
+	Type         string `json:"type"`
+	IsPredefined bool   `json:"isPredefined"`
+	Value        string `json:"value"`
+}
+
+type AnalysisQuery struct {
+	Name         string   `json:"name"`
+	Description  string   `json:"description"`
+	Context      string   `json:"context"`
+	Status       int64    `json:"status"`
+	CreatedTime  int64    `json:"createdTime"`
+	ModifiedTime int64    `json:"modifiedTime"`
+	Groups       []string `json:"groups"`
+	Type         string   `json:"type"`
+	Tool         string   `json:"tool"`
+	SourceType   string   `json:"sourceType"`
+	StartOffset  int64    `json:"startOffset"`
+	EndOffset    int64    `json:"endOffset"`
+
+	Filters  []AnalysisFilter `json:"filters"`
+	VulnTool string           `json:"vulnTool"`
+}
+
+type AnalysisBody struct {
+	Query      AnalysisQuery `json:"query"`
+	SourceType string        `json:"sourceType"`
+	Columns    interface{}   `json:"columns"`
+	Type       string        `json:"type"`
 }

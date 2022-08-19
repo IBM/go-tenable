@@ -1,0 +1,48 @@
+{
+	"type" : "regular",
+	"response" : {
+		"totalRecords" : "1",
+ 		"returnedRecords" : 1,
+		"startOffset" : "0",
+		"endOffset" : "50",
+		"matchingDataElementCount" : "-1",
+		"results":[
+			{
+				"pluginID" : "119500",
+				"severity" : {
+					"id" : "4",
+					"name" : "Critical",
+					"description" : "Critical Severity"
+				},
+				"vprScore" : "6.7",
+				"vprContext" : "[]",
+			"ip" : "172.26.48.75",
+			"uuid" : "",
+			"port" : "8080",
+			"protocol" : "TCP",
+			"name" : "Jenkins < 2.138.4 LTS \/ 2.150.1 LTS \/ 2.154 MultipleVulnerabilities",
+			"dnsName" : "",
+			"macAddress" : "00:50:56:be:27:da",
+			"netbiosName" : "TARGET\\WINDOW7X64",
+			"uniqueness" : "repositoryID,ip,dnsName",
+			"hostUniqueness" : "repositoryID,ip,dnsName",
+			"family" : {
+					"id" : "6",
+					"name" : "CGI abuses",
+					"type" : "active"
+			},
+			"repository" : {
+					"id" : "516",
+					"name" : "repo1",
+					"description" : "",
+					"dataFormat" : "IPv4"
+			},
+			"pluginInfo" : "119500 (8080\/6) Jenkins < 2.138.4 LTS \/ 2.150.1 LTS \/ 2.154 Multiple Vulnerabilities"
+			}
+		]
+	},
+	"error_code" : 0,
+	"error_msg" : "",
+	"warnings" : [],
+	"timestamp" : 1553525692
+}

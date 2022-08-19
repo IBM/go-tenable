@@ -35,13 +35,78 @@ func main() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	user, resp, err := c.Repository.Get("", "id,name")
+	//"14272,11219,22964"
+	/*
+		{
+			"query":
+			{
+				"name":"",
+				"description":"",
+				"context":"",
+				"status":-1,
+				"createdTime":0,
+				"modifiedTime":0,
+				"groups":[],
+				"type":"vuln",
+				"tool":"listvuln",
+				"sourceType":"cumulative",
+				"startOffset":0,
+				"endOffset":50,
+				"filters":[
+				{
+					"id":"pluginID",
+					"filterName":"pluginID",
+					"operator":"=",
+					"type":"vuln",
+					"isPredefined":true,
+					"value":"14272,11219,22964"
+				}
+				],
+				"vulnTool":"listvuln"
+			},
+			"sourceType":"cumulative",
+			"columns":[],
+			"type":"vuln"
+		}
+	*/
+	f := tenable.AnalysisFilter{}
+	q := tenable.AnalysisQuery{}
+	b := tenable.AnalysisBody{}
+	q.Name = ""
+	q.Description = ""
+	q.Context = ""
+	q.Status = -1
+	q.CreatedTime = 0
+	q.ModifiedTime = 0
+	q.Groups = nil
+	q.Type = "vuln"
+	q.Tool = "listvuln"
+	q.SourceType = "cumulative"
+	q.StartOffset = 0
+	q.EndOffset = 2
+
+	f.ID = "pluginID"
+	f.FilterName = "pluginID"
+	f.Operator = "="
+	f.Type = "vuln"
+	f.IsPredefined = true
+	f.Value = "14272,11219,22964"
+	q.Filters = []tenable.AnalysisFilter{f}
+	q.VulnTool = "listvuln"
+
+	b.Query = q
+	b.SourceType = "cumulative"
+	b.Columns = nil
+	b.Type = "vuln"
+
+	items, resp, err := c.Analysis.Post(b)
 	if err != nil {
 		fmt.Println(err.Error())
+		return
 	}
 	_ = resp
-	for _, v := range user {
-		fmt.Println(v.ID, v.Name)
+	for _, v := range items.Response.Results {
+		fmt.Println(v)
 	}
 
 }
