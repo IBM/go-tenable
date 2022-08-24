@@ -101,12 +101,12 @@ func (s *AnalysisService) Post(body interface{}) (*AnalysisResponse, *Response, 
 }
 
 type AnalysisFilter struct {
-	ID           string `json:"id"`
-	FilterName   string `json:"filterName"`
-	Operator     string `json:"operator"`
-	Type         string `json:"type"`
-	IsPredefined bool   `json:"isPredefined"`
-	Value        string `json:"value"`
+	ID           string      `json:"id"`
+	FilterName   string      `json:"filterName"`
+	Operator     string      `json:"operator"`
+	Type         string      `json:"type"`
+	IsPredefined bool        `json:"isPredefined"`
+	Value        interface{} `json:"value"`
 }
 
 type AnalysisQuery struct {
